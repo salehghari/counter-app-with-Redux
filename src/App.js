@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import './styles.css'
+import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 
-function App() {
+export default function App() {
+  const [customNumber, setCustomNumber] = useState(10)
+  const [showText, setShowText] = useState(false)
+  const counter = useSelector((state) => state.counter)
+  const dispatch = useDispatch()
+  function increment() {
+    dispatch(
+      { type: "INC" }
+    )
+  }
+  function decrement() {
+    dispatch(
+      { type: "DEC" }
+    )
+  }
+  function Text() {
+    if (showText) {
+      if(!customNumber || Number(customNumber) === 0){
+        return (<p className="text">What you expect me to do now?</p>);
+      }
+    }
+  }
+  function customAdd() {
+    if (!customNumber || Number(customNumber) === 0) {
+      setShowText(true)
+    } 
+    dispatch(
+      {
+        type: "CUSTOM_ADD",
+        payload: Number(customNumber)
+      }
+    )
+  }
+  function changeCustomNumber(event) {
+    setShowText(false)
+    setCustomNumber(event.target.value)
+  }
+  useEffect(() => {
+    setShowText(false)
+  }, [counter])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="header">Counter App Using Redux.</h1>
+      <h2 className="counter">{counter}</h2>
+      <button onClick={decrement}>Decrement</button>
+      <button onClick={increment}>Increment</button>
+      <button onClick={customAdd}>Add/Remove By {customNumber}</button>
+      <input type="number" name="input" value={customNumber} onChange={changeCustomNumber} />
+      <Text />
     </div>
   );
 }
-
-export default App;
